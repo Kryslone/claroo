@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-a&-&e^9hgavd5todu534xbva$@xc)%qh^kjcmg8((d3to_9)98
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', '.railway.app']
 
 
 # Application definition
@@ -124,6 +124,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Crispy Forms settings
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
