@@ -1,0 +1,91 @@
+{% extends "claroapp/auth/base_simple.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h1 class="login-title mb-5">Log In to Claro.</h1>
+    
+    <!-- Error message display -->
+    {% if error_message %}
+    <div class="alert alert-danger" role="alert">
+        {{ error_message }}
+    </div>
+    {% endif %}
+    
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="form-floating mb-5">
+            <input type="text" class="form-control rounded-pill" id="floatingUsername" name="username"
+                placeholder="Email" value="{{ username }}" required>
+            <label for="floatingUsername" class="custom-label">Email</label>
+        </div>
+        <div class="form-floating mb-5 position-relative">
+            <input type="password" class="form-control rounded-pill" id="floatingPassword" name="password"
+                placeholder="Password" required>
+            <label for="floatingPassword" class="custom-label">Password</label>
+            <span class="position-absolute top-50 end-0 translate-middle-y me-4 eye-icon"
+                onclick="togglePasswordVisibility()">
+                <i class="fas fa-eye" id="togglePasswordIcon"></i>
+            </span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="rememberMe" name="remember_me" {% if username %}checked{% endif %}>
+                <label class="form-check-label" for="rememberMe">Remember me</label>
+            </div>
+            <span class="forgot-text">Forgot password?</span>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Sign In</button>
+        <div class="text-center mt-4 mb-5">
+            <p class="dhaa_text">Don't have an account? <a href="{% url 'register' %}" class="sun_text">Sign Up Now</a>
+            </p>
+        </div>
+    </form>
+</div>
+
+<script>
+    function togglePasswordVisibility() {
+        const passwordInput = document.getElementById('floatingPassword');
+        const togglePasswordIcon = document.getElementById('togglePasswordIcon');
+        const isPasswordVisible = passwordInput.type === 'text';
+
+        if (isPasswordVisible) {
+            passwordInput.type = 'password';
+            togglePasswordIcon.classList.remove('fa-eye-slash');
+            togglePasswordIcon.classList.add('fa-eye');
+        } else {
+            passwordInput.type = 'text';
+            togglePasswordIcon.classList.remove('fa-eye');
+            togglePasswordIcon.classList.add('fa-eye-slash');
+        }
+    }
+</script>
+
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyAdDh4wJMp2lyQ583YON7pN4cPX75KrHCY",
+      authDomain: "haraya-claro.firebaseapp.com",
+      databaseURL: "https://haraya-claro-default-rtdb.firebaseio.com",
+      projectId: "haraya-claro",
+      storageBucket: "haraya-claro.firebasestorage.app",
+      messagingSenderId: "323965485697",
+      appId: "1:323965485697:web:bd369faa28a7875b04c380",
+      measurementId: "G-JXY5L25Q81"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
+
+{% endblock %}

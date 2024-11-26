@@ -1,0 +1,188 @@
+{% extends "claroapp/auth/base_simple.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<h1 class="register-title">Sign Up As</h1>
+<h2 id="role-display" class="role-display">Student</h2> <!-- Add this line -->
+
+<style>
+    .form-control {
+        border-radius: 50px;
+        padding: 18px;
+        margin-bottom: 15px;
+        margin-top: 15px;
+    }
+
+    .form-control::placeholder {
+        font-family: 'baloo 2';
+        font-weight: bold;
+        color: lightgray;
+    }
+
+    .role-container {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        margin-bottom: 15px;
+        background-color: white;
+        border-radius: 50px;
+        padding: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: fit-content;
+        margin: 0 0 10px 0;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(50%);
+    }
+
+    .role-button {
+        border-radius: 50px;
+        background-color: white;
+        color: rgb(25, 95, 179);
+        border: 1.5px solid rgb(151, 198, 255);
+        padding: 10px 20px;
+        margin: 0 2.5px;
+        box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        font-size: 24px;
+    }
+
+    .btn-primary {
+        padding-left: 80px;
+        padding-right: 80px;
+    }
+
+    .button-container-register {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .role-display {
+        font-family: 'baloo 2';
+        font-weight: bold;
+        font-size: 50px;
+        color: rgba(17, 81, 157, 1);
+        margin-bottom: 20px;
+        text-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .custom-placeholder::placeholder {
+        color: grey;
+    }
+
+    .login-text {
+        text-align: center;
+        margin-top: 20px;
+        font-family: 'baloo 2';
+        font-weight: bold;
+        font-size: 20px;
+        color: white;
+    }
+
+    .login-link {
+        color: rgb(25, 95, 179);
+        text-decoration: none;
+        font-weight: bold;
+        margin-left: 10px;
+    }
+</style>
+
+<form method="post">
+    {% csrf_token %}
+
+    {{register_form|crispy}}
+
+    <div class="role-container">
+        <input type="hidden" id="id_role" name="role" value="{{ form.role.value }}">
+        <div class="role-button {% if not form.role.value or form.role.value == 'student' %}active{% endif %}"
+            data-role="student"><i class="fas fa-user-graduate"></i></div>
+        <div class="role-button {% if form.role.value == 'teacher' %}active{% endif %}" data-role="teacher"><i
+                class="fas fa-chalkboard-teacher"></i>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{ form.first_name|as_crispy_field }}
+        </div>
+        <div class="col-md-6">
+            {{ form.last_name|as_crispy_field }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {{ form.email|as_crispy_field }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{ form.phone_number|as_crispy_field }}
+        </div>
+        <div class="col-md-6">
+            {{ form.date_of_birth|as_crispy_field }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{ form.password|as_crispy_field }}
+        </div>
+        <div class="col-md-6">
+            {{ form.password2|as_crispy_field }}
+        </div>
+    </div>
+    {% if form.errors %}
+    <div class="alert alert-danger">
+        <ul>
+            {% for field in form %}
+            {% for error in field.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    <div class="button-container-register">
+        <button type="submit" class="btn btn-primary">Register</button>
+    </div>
+</form>
+
+<div class="login-text">
+    Already have an Account?<a href="{% url 'login' %}" class="login-link">Sign In Now</a>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const roleButtons = document.querySelectorAll('.role-button');
+        const roleInput = document.getElementById('id_role');
+        const roleDisplay = document.getElementById('role-display');
+
+        if (roleButtons.length > 0 && roleInput && roleDisplay) {
+            roleButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    roleButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    roleInput.value = this.getAttribute('data-role');
+                    roleDisplay.textContent = this.getAttribute('data-role').charAt(0).toUpperCase() + this.getAttribute('data-role').slice(1);
+                });
+            });
+
+            // Set initial active button based on form value or default to student
+            const initialRole = roleInput.value || 'student';
+            const initialButton = document.querySelector(`.role-button[data-role="${initialRole}"]`);
+            if (initialButton) {
+                initialButton.classList.add('active');
+                roleInput.value = initialRole;
+                roleDisplay.textContent = initialRole.charAt(0).toUpperCase() + initialRole.slice(1);
+            }
+        }
+    });
+</script>
+
+{% endblock %}
